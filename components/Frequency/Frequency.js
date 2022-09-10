@@ -46,13 +46,27 @@ const Frequency = () => {
     setWeek(newWeek);
   };
 
+  const addDayViewStyle = day => {
+    if (day === today.getDate() && day === selectedDay) {
+      return {
+        backgroundColor: colors.primaryLight,
+        width: 50,
+        borderRadius: 24,
+      };
+    }
+    if (day === selectedDay) {
+      return {
+        backgroundColor: colors.white,
+        width: 50,
+        borderRadius: 24,
+      };
+    }
+  };
+
   const addDayStyle = day => {
     if (day === today.getDate() && day === selectedDay) {
       return {
         color: colors.white,
-        backgroundColor: colors.primaryLight,
-        width: 50,
-        borderRadius: 24,
       };
     }
     if (day === today.getDate()) {
@@ -63,9 +77,6 @@ const Frequency = () => {
     if (day === selectedDay) {
       return {
         color: colors.black,
-        backgroundColor: colors.white,
-        width: 50,
-        borderRadius: 24,
       };
     }
   };
@@ -99,7 +110,11 @@ const Frequency = () => {
             key={day}
             style={styles.dayView}
             onPress={() => setSelectedDay(day)}>
-            <Text style={[styles.daysOfWeekText, addDayStyle(day)]}>{day}</Text>
+            <View style={addDayViewStyle(day)}>
+              <Text style={[styles.daysOfWeekText, addDayStyle(day)]}>
+                {day}
+              </Text>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -147,7 +162,11 @@ const styles = StyleSheet.create({
     color: colors.white,
     textAlign: 'center',
   },
-  daysOfWeekText: {color: colors.white, textAlign: 'center', fontSize: 24},
+  daysOfWeekText: {
+    color: colors.white,
+    textAlign: 'center',
+    fontSize: 24,
+  },
 });
 
 export default Frequency;
