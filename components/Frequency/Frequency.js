@@ -1,18 +1,78 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {colors} from '../../globals';
 
 const daysOfWeek = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
 
 const Frequency = () => {
-  const [totalDays, setTotalDays] = useState('22');
-  const [week, setWeek] = useState([]);
   const today = new Date();
+  const [totalDays, setTotalDays] = useState('13');
+  const [week, setWeek] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(today.getDate());
 
-  const buildWeek = () => {};
+  const buildWeek = () => {
+    const newWeek = [];
+    let currentDay = today.getDate();
+
+    if (today.getDay() - 1 === 6) {
+      const newDate = new Date();
+      newDate.setDate(today.getDate() - 1);
+      newWeek[5] = newDate.getDate();
+      currentDay = newDate.getDate();
+    } else {
+      newWeek[(today.getDay() - 1 + 6) % 6] = today.getDate();
+    }
+
+    const todayIndex = newWeek.indexOf(currentDay);
+
+    for (let i = todayIndex - 1; i >= 0; i--) {
+      const newDate = new Date();
+      newDate.setDate(newDate.getDate() - (todayIndex - i));
+      newWeek[i] = newDate.getDate();
+    }
+
+    for (let i = todayIndex + 1; i < 6; i++) {
+      const newDate = new Date();
+      newDate.setDate(newDate.getDate() + (6 - i));
+      newWeek[i] = newDate.getDate();
+    }
+
+    setWeek(newWeek);
+  };
+
+  const addDayStyle = day => {
+    if (day === today.getDate() && day === selectedDay) {
+      return {
+        color: colors.white,
+        backgroundColor: colors.primaryLight,
+        width: 50,
+        borderRadius: 24,
+      };
+    }
+    if (day === today.getDate()) {
+      return {
+        color: colors.primaryLight,
+      };
+    }
+    if (day === selectedDay) {
+      return {
+        color: colors.black,
+        backgroundColor: colors.white,
+        width: 50,
+        borderRadius: 24,
+      };
+    }
+  };
 
   useEffect(() => {
     buildWeek();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -26,11 +86,21 @@ const Frequency = () => {
           textAlign="center"
         />
       </View>
-      <View style={styles.daysOfWeekView}>
+      <View style={styles.weekView}>
         {daysOfWeek.map((day, index) => (
-          <Text key={index} style={styles.daysOfWeekText}>
-            {day}
-          </Text>
+          <View key={index} style={styles.dayView}>
+            <Text style={styles.daysOfWeekHead}>{day}</Text>
+          </View>
+        ))}
+      </View>
+      <View style={styles.weekView}>
+        {week.map(day => (
+          <TouchableOpacity
+            key={day}
+            style={styles.dayView}
+            onPress={() => setSelectedDay(day)}>
+            <Text style={[styles.daysOfWeekText, addDayStyle(day)]}>{day}</Text>
+          </TouchableOpacity>
         ))}
       </View>
     </View>
@@ -47,6 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 8,
+    marginBottom: 24,
   },
   chainText: {
     color: colors.secondary,
@@ -64,13 +135,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 24,
   },
-  daysOfWeekView: {
+  weekView: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
-  daysOfWeekText: {
+  dayView: {
+    width: '16%',
+    alignItems: 'center',
+  },
+  daysOfWeekHead: {
     color: colors.white,
+    textAlign: 'center',
   },
+  daysOfWeekText: {color: colors.white, textAlign: 'center', fontSize: 24},
 });
 
 export default Frequency;
