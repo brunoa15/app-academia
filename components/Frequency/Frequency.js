@@ -20,7 +20,7 @@ const Frequency = () => {
     const newWeek = [];
     let currentDay = today.getDate();
 
-    if (today.getDay() - 1 === 6) {
+    if (today.getDay() === 0) {
       const newDate = new Date();
       newDate.setDate(today.getDate() - 1);
       newWeek[5] = newDate.getDate();
@@ -33,7 +33,7 @@ const Frequency = () => {
 
     for (let i = todayIndex - 1; i >= 0; i--) {
       const newDate = new Date();
-      newDate.setDate(newDate.getDate() - (todayIndex - i));
+      newDate.setDate(currentDay - (todayIndex - i));
       newWeek[i] = newDate.getDate();
     }
 
