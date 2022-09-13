@@ -51,26 +51,12 @@ const Frequency = () => {
     setWeek(newWeek);
   };
 
-  const addDayViewStyle = day => {
+  const addDayStyle = day => {
     if (day === today.getDay() - 1 && day === selectedWeekDay) {
       return {
         backgroundColor: colors.primaryLight,
         width: 50,
         borderRadius: 24,
-      };
-    }
-    if (day === selectedWeekDay) {
-      return {
-        backgroundColor: colors.white,
-        width: 50,
-        borderRadius: 24,
-      };
-    }
-  };
-
-  const addDayStyle = day => {
-    if (day === today.getDay() - 1 && day === selectedWeekDay) {
-      return {
         color: colors.white,
       };
     }
@@ -81,14 +67,27 @@ const Frequency = () => {
     }
     if (day === selectedWeekDay) {
       return {
+        backgroundColor: colors.white,
+        width: 50,
+        borderRadius: 24,
         color: colors.black,
       };
     }
   };
 
+  const addButtonDisabledStyle = () => {
+    if (doneDay !== null || selectedWeekDay > today.getDay() - 1) {
+      return {
+        backgroundColor: colors.disabledGrey,
+        color: colors.grey,
+      };
+    }
+    return null;
+  };
+
   const updateFrequency = change => {
-    setFrequency(change);
-    updateData('@frequency', change);
+    setFrequency(String(change));
+    updateData('@frequency', +change);
   };
 
   const getTrainingDay = async dayIndex => {
@@ -107,12 +106,18 @@ const Frequency = () => {
 
   const handleDone = () => {
     updateData(`@doneDay${selectedWeekDay}`, switchSelection);
-    updateData('@frequency', `${+frequency + 1}`);
-    setFrequency(`${+frequency + 1}`);
+    updateData('@frequency', +frequency + 1);
+    setFrequency(String(+frequency + 1));
+    setDoneDay(switchSelection);
   };
 
   useEffect(() => {
-    getData('@frequency', setFrequency);
+    async function fetchData() {
+      const responseFrequency = await returnData('@frequency');
+      console.log(responseFrequency);
+      setFrequency(responseFrequency || '0');
+    }
+    fetchData();
     buildWeek();
   }, []);
 
@@ -120,7 +125,6 @@ const Frequency = () => {
     async function fetchData() {
       const responseTrainingDay = await getTrainingDay(selectedWeekDay);
       const responseDoneDay = await returnData(`@doneDay${selectedWeekDay}`);
-      console.log(responseDoneDay);
       setSwitchSelection(responseTrainingDay);
       setDoneDay(responseDoneDay);
     }
@@ -151,7 +155,7 @@ const Frequency = () => {
             key={index}
             style={styles.dayView}
             onPress={() => setSelectedWeekDay(index)}>
-            <View style={addDayViewStyle(index)}>
+            <View style={addDayStyle(index)}>
               <Text style={[styles.daysOfWeekText, addDayStyle(index)]}>
                 {day}
               </Text>
@@ -165,19 +169,26 @@ const Frequency = () => {
           <Switch
             value={switchSelection}
             onValueChange={setSwitchSelection}
+            disabled={doneDay !== null}
             style={styles.exerciseSwitch}
-            thumbColor={colors.primaryLight}
-            trackColor={{true: colors.primaryDark, false: colors.primaryDark}}
+            thumbColor={
+              doneDay !== null ? colors.successGreen : colors.primaryLight
+            }
+            io
+            trackColor={
+              doneDay !== null
+                ? {true: colors.disabledGrey, false: colors.disabledGrey}
+                : {true: colors.primaryDark, false: colors.primaryDark}
+            }
           />
           <Text>Treino B</Text>
         </View>
         <TouchableOpacity
           onPress={handleDone}
-          disabled={doneDay !== null}
-          style={styles.successButton}>
-          <Text>O DE HOJE TÁ PAGO!</Text>
+          disabled={doneDay !== null || selectedWeekDay > today.getDay() - 1}
+          style={[styles.successButton, addButtonDisabledStyle()]}>
+          <Text style={addButtonDisabledStyle()}>O DE HOJE TÁ PAGO! 💪</Text>
         </TouchableOpacity>
-        <Text>AAA {doneDay}</Text>
       </View>
     </View>
   );

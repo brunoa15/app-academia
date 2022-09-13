@@ -8,7 +8,9 @@ export const colors = {
   secondary: '#F2F3AE',
   black: '#000',
   white: '#fff',
+  grey: '#666',
   darkGrey: '#333',
+  disabledGrey: '#aaa',
   successGreen: '#00b56a',
 };
 
@@ -28,7 +30,7 @@ export const returnData = async key => {
     const value = await AsyncStorage.getItem(key);
     return value;
   } catch {
-    return 'sdfsdfsd';
+    return null;
   }
 };
 
