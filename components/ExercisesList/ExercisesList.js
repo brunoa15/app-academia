@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {colors} from '../../globals';
+import {colors, getData} from '../../globals';
 import AddButton from '../AddButton';
 import DataEntry from '../DataEntry';
 
@@ -9,39 +8,16 @@ const ExercisesList = ({active}) => {
   const [exercises, setExercises] = useState([]);
   const [showDataEntry, setShowDataEntry] = useState(false);
 
-  const getData = async trainingId => {
-    try {
-      const value = await AsyncStorage.getItem(`@exercises${trainingId}`);
-      if (value !== null) {
-        setExercises(JSON.parse(value));
-      }
-    } catch {
-      setExercises([]);
-    }
-  };
-
-  const persistData = async (trainingId, newExercise) => {
-    try {
-      await AsyncStorage.setItem(
-        `@exercises${trainingId}`,
-        JSON.stringify([...exercises, newExercise]),
-      );
-      getData(active);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   useEffect(() => {
     setExercises([]);
-    getData(active);
+    getData(`@exercises${active}`, setExercises);
   }, [active]);
 
   return (
     <View style={styles.container}>
       <ScrollView>
         {showDataEntry && (
-          <DataEntry trainingId={active} persistData={persistData} />
+          <DataEntry trainingId={active} setExercises={setExercises} />
         )}
         <View style={styles.tableRow}>
           <Text style={[styles.tableFirstItem, styles.textTableHead]}>

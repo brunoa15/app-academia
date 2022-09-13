@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
-import {colors} from '../../globals';
+import {colors, persistData} from '../../globals';
 import Input from '../Input';
 
-const DataEntry = ({trainingId, persistData}) => {
+const DataEntry = ({trainingId, setExercises}) => {
   const initialState = {
     name: '',
     sets: '',
@@ -14,7 +14,7 @@ const DataEntry = ({trainingId, persistData}) => {
   const [exercise, setExercise] = useState(initialState);
 
   const handleNewExercise = () => {
-    persistData(trainingId, exercise);
+    persistData(`@exercises${trainingId}`, setExercises, exercise);
     setExercise(initialState);
   };
 
