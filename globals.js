@@ -9,8 +9,9 @@ export const colors = {
   black: '#000',
   white: '#fff',
   grey: '#666',
-  darkGrey: '#333',
-  disabledGrey: '#aaa',
+  greyDark: '#333',
+  greyDarker: '#222',
+  greyDisabled: '#aaa',
   successGreen: '#00b56a',
 };
 

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {colors, getData} from '../../globals';
 import AddButton from '../AddButton';
+import Card from '../Card';
 import DataEntry from '../DataEntry';
 
 const ExercisesList = ({active}) => {
@@ -19,21 +20,28 @@ const ExercisesList = ({active}) => {
         {showDataEntry && (
           <DataEntry trainingId={active} setExercises={setExercises} />
         )}
-        <View style={styles.tableRow}>
+        {/* <View style={styles.tableRow}>
           <Text style={[styles.tableFirstItem, styles.textTableHead]}>
             Exercício
           </Text>
           <Text style={[styles.tableItems, styles.textTableHead]}>S</Text>
           <Text style={[styles.tableItems, styles.textTableHead]}>R</Text>
           <Text style={[styles.tableItems, styles.textTableHead]}>C</Text>
-        </View>
-        {exercises.map(exercise => (
-          <View key={exercise.name} style={styles.tableRow}>
-            <Text style={styles.tableFirstItem}>{exercise.name}</Text>
-            <Text style={styles.tableItems}>{exercise.sets}</Text>
-            <Text style={styles.tableItems}>{exercise.reps}</Text>
-            <Text style={styles.tableItems}>{exercise.weight}</Text>
-          </View>
+        </View> */}
+        {exercises.map((exercise, index) => (
+          // <View key={exercise.name} style={styles.tableRow}>
+          //   <Text style={styles.tableFirstItem}>{exercise.name}</Text>
+          //   <Text style={styles.tableItems}>{exercise.sets}</Text>
+          //   <Text style={styles.tableItems}>{exercise.reps}</Text>
+          //   <Text style={styles.tableItems}>{exercise.weight}</Text>
+          // </View>
+          <Card
+            key={index}
+            name={exercise.name}
+            sets={exercise.sets}
+            reps={exercise.reps}
+            weight={exercise.weight}
+          />
         ))}
       </ScrollView>
       <AddButton onPress={() => setShowDataEntry(!showDataEntry)} />

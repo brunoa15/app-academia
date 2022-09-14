@@ -30,7 +30,7 @@ const Input = ({
       borderColor: fieldColor,
       borderRadius: 32,
       marginBottom: 8,
-      backgroundColor: colors.darkGrey,
+      backgroundColor: colors.greyDark,
       color: colors.white,
       flex: 1,
     },

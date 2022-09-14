@@ -1,24 +1,15 @@
 import React, {useState} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import Menu from './components/Menu';
 import ExercisesList from './components/ExercisesList';
 import Frequency from './components/Frequency';
+import {colors} from './globals';
 
 const App = () => {
   const [active, setActive] = useState('A');
 
-  const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: colors.greyDarker,
     flex: 1,
   };
 

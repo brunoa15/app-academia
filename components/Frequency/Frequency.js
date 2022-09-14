@@ -89,7 +89,7 @@ const Frequency = () => {
   const addButtonDisabledStyle = () => {
     if (doneDay !== null || selectedWeekDay > today.getDay() - 1) {
       return {
-        backgroundColor: colors.disabledGrey,
+        backgroundColor: colors.greyDisabled,
         color: colors.grey,
       };
     }
@@ -154,7 +154,10 @@ const Frequency = () => {
     if (doneDay === null) {
       return 'CONFIRMAR DIA 🏋️';
     }
-    return 'O DE HOJE TÁ PAGO! 💪';
+    if (selectedWeekDay === today.getDate() - 1) {
+      return 'O DE HOJE TÁ PAGO! 💪';
+    }
+    return 'TÁ PAGO! 💪';
   };
 
   const handleDone = async () => {
@@ -242,7 +245,7 @@ const Frequency = () => {
           </Text>
           <Switch
             ios_backgroundColor={
-              doneDay !== null ? colors.darkGrey : colors.primaryDark
+              doneDay !== null ? colors.greyDark : colors.primaryDark
             }
             value={switchSelection}
             onValueChange={setSwitchSelection}
@@ -253,7 +256,7 @@ const Frequency = () => {
             }
             trackColor={
               doneDay !== null
-                ? {true: colors.darkGrey, false: colors.darkGrey}
+                ? {true: colors.greyDark, false: colors.greyDark}
                 : {true: colors.primaryDark, false: colors.primaryDark}
             }
           />
@@ -283,6 +286,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginBottom: 24,
+    marginHorizontal: 4,
   },
   chainText: {
     color: colors.secondary,
@@ -335,6 +339,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 48,
     borderRadius: 12,
+    marginHorizontal: 4,
   },
 });
 
