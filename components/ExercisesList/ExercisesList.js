@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {colors, getData} from '../../globals';
 import AddButton from '../AddButton';
 import Card from '../Card';
@@ -35,13 +35,7 @@ const ExercisesList = ({active}) => {
           //   <Text style={styles.tableItems}>{exercise.reps}</Text>
           //   <Text style={styles.tableItems}>{exercise.weight}</Text>
           // </View>
-          <Card
-            key={index}
-            name={exercise.name}
-            sets={exercise.sets}
-            reps={exercise.reps}
-            weight={exercise.weight}
-          />
+          <Card key={index} exerciseData={exercise} />
         ))}
       </ScrollView>
       <AddButton onPress={() => setShowDataEntry(!showDataEntry)} />

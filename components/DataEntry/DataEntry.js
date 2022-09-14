@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {Button, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors, persistData} from '../../globals';
 import Input from '../Input';
 
-const DataEntry = ({trainingId, setExercises}) => {
+const DataEntry = ({data, trainingId, setExercises}) => {
   const initialState = {
     name: '',
     sets: '',
@@ -17,6 +17,12 @@ const DataEntry = ({trainingId, setExercises}) => {
     persistData(`@exercises${trainingId}`, setExercises, exercise);
     setExercise(initialState);
   };
+
+  useEffect(() => {
+    if (data) {
+      setExercise(data);
+    }
+  }, [data]);
 
   return (
     <View style={styles.container}>
@@ -60,7 +66,12 @@ const DataEntry = ({trainingId, setExercises}) => {
           />
         </View>
       </View>
-      <Button title="add" onPress={handleNewExercise} />
+      <TouchableOpacity style={styles.buttonAdd} onPress={handleNewExercise}>
+        <Text style={styles.buttonAddText}>ADD</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonDelete}>
+        <Text style={styles.buttonDeleteText}>EXCLUIR</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -82,6 +93,32 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 16,
     color: colors.primary,
+  },
+  buttonAdd: {
+    backgroundColor: colors.greyDarker,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 48,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: colors.primaryLight,
+    marginTop: 24,
+  },
+  buttonAddText: {
+    color: colors.primaryLight,
+    fontWeight: '700',
+  },
+  buttonDelete: {
+    backgroundColor: colors.errorRed,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 48,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  buttonDeleteText: {
+    color: colors.white,
+    fontWeight: '700',
   },
 });
 

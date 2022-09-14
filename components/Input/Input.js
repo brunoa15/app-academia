@@ -10,14 +10,14 @@ const Input = ({
   label,
   returnKeyType,
 }) => {
-  const [fieldColor, setFieldColor] = useState(colors.primary);
+  const [fieldColor, setFieldColor] = useState(colors.black);
 
   const onInputFocus = () => {
     setFieldColor(colors.primaryLight);
   };
 
   const onInputBlur = () => {
-    setFieldColor(colors.primary);
+    setFieldColor(colors.black);
   };
 
   const styles = StyleSheet.create({
@@ -32,11 +32,10 @@ const Input = ({
       marginBottom: 8,
       backgroundColor: colors.greyDark,
       color: colors.white,
-      flex: 1,
     },
     label: {
       marginLeft: 16,
-      color: fieldColor,
+      color: colors.primaryLight,
     },
   });
 

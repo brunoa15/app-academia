@@ -13,6 +13,7 @@ export const colors = {
   greyDarker: '#222',
   greyDisabled: '#aaa',
   successGreen: '#00b56a',
+  errorRed: '#983628',
 };
 
 export const getData = async (key, setState) => {

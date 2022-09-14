@@ -1,29 +1,39 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../globals';
+import ExerciseModal from '../ExerciseModal';
 
-const Card = ({name, sets, reps, weight}) => {
+const Card = ({exerciseData}) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
-        <Text style={styles.textName}>{name}</Text>
+        <Text style={styles.textName}>{exerciseData.name}</Text>
         <View style={styles.infoRow}>
           <View style={styles.info}>
-            <Text style={styles.infoText}>🔢 {sets}</Text>
+            <Text style={styles.infoText}>🔢 {exerciseData.sets}</Text>
           </View>
           <View style={styles.info}>
-            <Text style={styles.infoText}>🔁 {reps}</Text>
+            <Text style={styles.infoText}>🔁 {exerciseData.reps}</Text>
           </View>
-          {weight && (
+          {exerciseData.weight && (
             <View style={styles.info}>
-              <Text style={styles.infoText}>🏋️ {weight}</Text>
+              <Text style={styles.infoText}>🏋️ {exerciseData.weight}</Text>
             </View>
           )}
         </View>
       </View>
-      <TouchableOpacity style={styles.editButton}>
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => setModalOpen(true)}>
         <Text>✏️</Text>
       </TouchableOpacity>
+      <ExerciseModal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        data={exerciseData}
+      />
     </View>
   );
 };
