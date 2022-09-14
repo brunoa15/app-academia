@@ -55,3 +55,11 @@ export const updateData = async (key, newItem) => {
     console.error(e);
   }
 };
+
+export const removeData = async key => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (e) {
+    console.error(e);
+  }
+};

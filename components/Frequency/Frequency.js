@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {colors, getData, returnData, updateData} from '../../globals';
+import {colors, removeData, returnData, updateData} from '../../globals';
 
 const daysOfWeek = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
 
@@ -51,12 +51,26 @@ const Frequency = () => {
     setWeek(newWeek);
   };
 
-  const addDayStyle = day => {
+  const addDayViewStyle = day => {
     if (day === today.getDay() - 1 && day === selectedWeekDay) {
       return {
         backgroundColor: colors.primaryLight,
         width: 50,
         borderRadius: 24,
+      };
+    }
+    if (day === selectedWeekDay) {
+      return {
+        backgroundColor: colors.white,
+        width: 50,
+        borderRadius: 24,
+      };
+    }
+  };
+
+  const addDayStyle = day => {
+    if (day === today.getDay() - 1 && day === selectedWeekDay) {
+      return {
         color: colors.white,
       };
     }
@@ -67,9 +81,6 @@ const Frequency = () => {
     }
     if (day === selectedWeekDay) {
       return {
-        backgroundColor: colors.white,
-        width: 50,
-        borderRadius: 24,
         color: colors.black,
       };
     }
@@ -85,9 +96,42 @@ const Frequency = () => {
     return null;
   };
 
+  const addSwitchTextStyle = switchPosition => {
+    if (doneDay !== null && switchPosition === switchSelection) {
+      return {
+        color: colors.successGreen,
+      };
+    }
+    if (switchPosition === switchSelection) {
+      return {
+        color: colors.primaryLight,
+      };
+    }
+  };
+
   const updateFrequency = change => {
     setFrequency(String(change));
     updateData('@frequency', +change);
+  };
+
+  const clearDoneDays = async () => {
+    for (let i = 0; i < 6; i++) {
+      await removeData(`@doneDay${i}`);
+    }
+  };
+
+  const getByLastTraining = async () => {
+    const lastTraining = await returnData('@lastTraining');
+    const lastTrainingWeekDay = await returnData('@lastTrainingWeekDay');
+    const lastTrainingDate = await returnData('@lastTrainingDate');
+
+    if (lastTraining === null) {
+      return false;
+    }
+    if (lastTrainingWeekDay === 0 && lastTrainingDate === week[0]) {
+      await clearDoneDays();
+    }
+    return lastTraining === 'false';
   };
 
   const getTrainingDay = async dayIndex => {
@@ -97,14 +141,31 @@ const Frequency = () => {
     }
 
     if (dayIndex === 0) {
-      const aaa = await returnData('@lastWeekTraining');
-      return aaa === 'true';
+      return await getByLastTraining();
     }
 
     return !(await getTrainingDay(dayIndex - 1));
   };
 
-  const handleDone = () => {
+  const getButtonText = () => {
+    if (selectedWeekDay > today.getDay() - 1) {
+      return 'CÊ TÁ APRESSADO 🗓️';
+    }
+    if (doneDay === null) {
+      return 'CONFIRMAR DIA 🏋️';
+    }
+    return 'O DE HOJE TÁ PAGO! 💪';
+  };
+
+  const handleDone = async () => {
+    const lastTrainingWeekDay = await returnData('@lastTrainingWeekDay');
+
+    if (lastTrainingWeekDay < selectedWeekDay) {
+      updateData('@lastTraining', switchSelection);
+      updateData('@lastTrainingWeekDay', selectedWeekDay);
+      updateData('@lastTrainingDate', week[selectedWeekDay]);
+    }
+
     updateData(`@doneDay${selectedWeekDay}`, switchSelection);
     updateData('@frequency', +frequency + 1);
     setFrequency(String(+frequency + 1));
@@ -114,7 +175,6 @@ const Frequency = () => {
   useEffect(() => {
     async function fetchData() {
       const responseFrequency = await returnData('@frequency');
-      console.log(responseFrequency);
       setFrequency(responseFrequency || '0');
     }
     fetchData();
@@ -128,8 +188,20 @@ const Frequency = () => {
       setSwitchSelection(responseTrainingDay);
       setDoneDay(responseDoneDay);
     }
-    fetchData();
-  }, [selectedWeekDay]);
+    if (week.length > 0) {
+      fetchData();
+    }
+  }, [selectedWeekDay, week]);
+
+  // remove storage
+  // useEffect(() => {
+  //   for (let index = 0; index < 6; index++) {
+  //     removeData(`@doneDay${index}`);
+  //   }
+  //   removeData('@lastTraining');
+  //   removeData('@lastTrainingWeekDay');
+  //   removeData('@lastTrainingDate');
+  // }, []);
 
   return (
     <View>
@@ -155,7 +227,7 @@ const Frequency = () => {
             key={index}
             style={styles.dayView}
             onPress={() => setSelectedWeekDay(index)}>
-            <View style={addDayStyle(index)}>
+            <View style={addDayViewStyle(index)}>
               <Text style={[styles.daysOfWeekText, addDayStyle(index)]}>
                 {day}
               </Text>
@@ -165,8 +237,13 @@ const Frequency = () => {
       </View>
       <View>
         <View style={styles.switchView}>
-          <Text>Treino A</Text>
+          <Text style={[styles.switchTextColor, addSwitchTextStyle(false)]}>
+            Treino A
+          </Text>
           <Switch
+            ios_backgroundColor={
+              doneDay !== null ? colors.darkGrey : colors.primaryDark
+            }
             value={switchSelection}
             onValueChange={setSwitchSelection}
             disabled={doneDay !== null}
@@ -174,20 +251,21 @@ const Frequency = () => {
             thumbColor={
               doneDay !== null ? colors.successGreen : colors.primaryLight
             }
-            io
             trackColor={
               doneDay !== null
-                ? {true: colors.disabledGrey, false: colors.disabledGrey}
+                ? {true: colors.darkGrey, false: colors.darkGrey}
                 : {true: colors.primaryDark, false: colors.primaryDark}
             }
           />
-          <Text>Treino B</Text>
+          <Text style={[styles.switchTextColor, addSwitchTextStyle(true)]}>
+            Treino B
+          </Text>
         </View>
         <TouchableOpacity
           onPress={handleDone}
           disabled={doneDay !== null || selectedWeekDay > today.getDay() - 1}
           style={[styles.successButton, addButtonDisabledStyle()]}>
-          <Text style={addButtonDisabledStyle()}>O DE HOJE TÁ PAGO! 💪</Text>
+          <Text style={addButtonDisabledStyle()}>{getButtonText()}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -243,6 +321,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  switchTextColor: {
+    color: colors.white,
   },
   exerciseSwitch: {
     marginVertical: 32,
