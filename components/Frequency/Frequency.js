@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
+  Keyboard,
   StyleSheet,
   Switch,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {colors, removeData, returnData, updateData} from '../../globals';
@@ -154,7 +156,7 @@ const Frequency = () => {
     if (doneDay === null) {
       return 'CONFIRMAR DIA 🏋️';
     }
-    if (selectedWeekDay === today.getDate() - 1) {
+    if (selectedWeekDay === today.getDay() - 1) {
       return 'O DE HOJE TÁ PAGO! 💪';
     }
     return 'TÁ PAGO! 💪';
@@ -196,16 +198,6 @@ const Frequency = () => {
     }
   }, [selectedWeekDay, week]);
 
-  // remove storage
-  // useEffect(() => {
-  //   for (let index = 0; index < 6; index++) {
-  //     removeData(`@doneDay${index}`);
-  //   }
-  //   removeData('@lastTraining');
-  //   removeData('@lastTrainingWeekDay');
-  //   removeData('@lastTrainingDate');
-  // }, []);
-
   return (
     <View>
       <View style={styles.chainView}>
@@ -215,6 +207,7 @@ const Frequency = () => {
           onChangeText={updateFrequency}
           style={styles.chainInput}
           textAlign="center"
+          keyboardType="number-pad"
         />
       </View>
       <View style={styles.weekView}>

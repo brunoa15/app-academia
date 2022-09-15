@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import {colors} from '../../globals';
 import DataEntry from '../DataEntry';
 
-const ExerciseModal = ({open, setOpen, data}) => {
+const ExerciseModal = ({open, setOpen, data, trainingId, setExercises}) => {
   return (
     <Modal
       isVisible={open}
@@ -14,7 +14,12 @@ const ExerciseModal = ({open, setOpen, data}) => {
       backdropColor={colors.grey}
       onBackdropPress={() => setOpen(false)}>
       <View style={styles.modalContent}>
-        <DataEntry data={data} />
+        <DataEntry
+          data={data}
+          trainingId={trainingId}
+          setExercises={setExercises}
+          setOpen={setOpen}
+        />
       </View>
     </Modal>
   );

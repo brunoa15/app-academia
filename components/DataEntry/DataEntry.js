@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {colors, persistData} from '../../globals';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {colors, getData, pushData, updateData} from '../../globals';
 import Input from '../Input';
 
-const DataEntry = ({data, trainingId, setExercises}) => {
+const DataEntry = ({data, trainingId, setExercises, setOpen}) => {
   const initialState = {
     name: '',
     sets: '',
@@ -11,18 +11,41 @@ const DataEntry = ({data, trainingId, setExercises}) => {
     weight: '',
   };
 
+  const [allExercises, setAllExercises] = useState([]);
   const [exercise, setExercise] = useState(initialState);
 
   const handleNewExercise = () => {
-    persistData(`@exercises${trainingId}`, setExercises, exercise);
+    const newExercise = {
+      id: allExercises.length + 1,
+      ...exercise,
+    };
+    pushData(`@exercises${trainingId}`, newExercise, setExercises);
     setExercise(initialState);
+    setOpen(false);
+  };
+
+  const handleDelete = isUpdating => {
+    const indexToRemove = allExercises.findIndex(item => item.id === data.id);
+    allExercises.splice(indexToRemove, 1);
+    if (!isUpdating) {
+      updateData(`@exercises${trainingId}`, allExercises, setExercises);
+    }
+  };
+
+  const handleUpdate = () => {
+    handleDelete(true);
+    allExercises.push(exercise);
+    allExercises.sort((a, b) => a.id - b.id);
+    updateData(`@exercises${trainingId}`, allExercises, setExercises);
+    setOpen(false);
   };
 
   useEffect(() => {
+    getData(`@exercises${trainingId}`, setAllExercises);
     if (data) {
       setExercise(data);
     }
-  }, [data]);
+  }, [data, trainingId]);
 
   return (
     <View style={styles.container}>
@@ -37,22 +60,18 @@ const DataEntry = ({data, trainingId, setExercises}) => {
           <Input
             label="Séries"
             returnKeyType="next"
-            keyboardType="numeric"
+            keyboardType="number-pad"
             value={exercise.sets}
-            setValue={change =>
-              setExercise({...exercise, sets: change.replace(/[^0-9]/g, '')})
-            }
+            setValue={change => setExercise({...exercise, sets: change})}
           />
         </View>
         <View style={styles.inputGap}>
           <Input
             label="Repetições"
             returnKeyType="next"
-            keyboardType="numeric"
+            keyboardType="number-pad"
             value={exercise.reps}
-            setValue={change =>
-              setExercise({...exercise, reps: change.replace(/[^0-9]/g, '')})
-            }
+            setValue={change => setExercise({...exercise, reps: change})}
           />
         </View>
         <View style={styles.flexGrow}>
@@ -60,18 +79,24 @@ const DataEntry = ({data, trainingId, setExercises}) => {
             label="Carga"
             keyboardType="numeric"
             value={exercise.weight}
-            setValue={change =>
-              setExercise({...exercise, weight: change.replace(/[^0-9]/g, '')})
-            }
+            setValue={change => setExercise({...exercise, weight: change})}
           />
         </View>
       </View>
-      <TouchableOpacity style={styles.buttonAdd} onPress={handleNewExercise}>
-        <Text style={styles.buttonAddText}>ADD</Text>
+      <TouchableOpacity
+        style={styles.buttonAdd}
+        onPress={data ? handleUpdate : handleNewExercise}>
+        <Text style={styles.buttonAddText}>
+          {data ? 'ATUALIZAR' : 'ADICIONAR'}
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonDelete}>
-        <Text style={styles.buttonDeleteText}>EXCLUIR</Text>
-      </TouchableOpacity>
+      {data && (
+        <TouchableOpacity
+          style={styles.buttonDelete}
+          onPress={() => handleDelete()}>
+          <Text style={styles.buttonDeleteText}>EXCLUIR</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -95,17 +120,15 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   buttonAdd: {
-    backgroundColor: colors.greyDarker,
+    backgroundColor: colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
     height: 48,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.primaryLight,
     marginTop: 24,
   },
   buttonAddText: {
-    color: colors.primaryLight,
+    color: colors.primaryDark,
     fontWeight: '700',
   },
   buttonDelete: {

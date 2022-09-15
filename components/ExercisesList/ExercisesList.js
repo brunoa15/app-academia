@@ -3,11 +3,11 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import {colors, getData} from '../../globals';
 import AddButton from '../AddButton';
 import Card from '../Card';
-import DataEntry from '../DataEntry';
+import ExerciseModal from '../ExerciseModal';
 
 const ExercisesList = ({active}) => {
   const [exercises, setExercises] = useState([]);
-  const [showDataEntry, setShowDataEntry] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     setExercises([]);
@@ -17,28 +17,22 @@ const ExercisesList = ({active}) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {showDataEntry && (
-          <DataEntry trainingId={active} setExercises={setExercises} />
-        )}
-        {/* <View style={styles.tableRow}>
-          <Text style={[styles.tableFirstItem, styles.textTableHead]}>
-            Exercício
-          </Text>
-          <Text style={[styles.tableItems, styles.textTableHead]}>S</Text>
-          <Text style={[styles.tableItems, styles.textTableHead]}>R</Text>
-          <Text style={[styles.tableItems, styles.textTableHead]}>C</Text>
-        </View> */}
-        {exercises.map((exercise, index) => (
-          // <View key={exercise.name} style={styles.tableRow}>
-          //   <Text style={styles.tableFirstItem}>{exercise.name}</Text>
-          //   <Text style={styles.tableItems}>{exercise.sets}</Text>
-          //   <Text style={styles.tableItems}>{exercise.reps}</Text>
-          //   <Text style={styles.tableItems}>{exercise.weight}</Text>
-          // </View>
-          <Card key={index} exerciseData={exercise} />
+        {exercises.map(exercise => (
+          <Card
+            key={exercise.id}
+            exerciseData={exercise}
+            trainingId={active}
+            setExercises={setExercises}
+          />
         ))}
       </ScrollView>
-      <AddButton onPress={() => setShowDataEntry(!showDataEntry)} />
+      <ExerciseModal
+        open={openModal}
+        setOpen={setOpenModal}
+        trainingId={active}
+        setExercises={setExercises}
+      />
+      <AddButton onPress={() => setOpenModal(true)} />
     </View>
   );
 };

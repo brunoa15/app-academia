@@ -3,7 +3,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../globals';
 import ExerciseModal from '../ExerciseModal';
 
-const Card = ({exerciseData}) => {
+const Card = ({exerciseData, trainingId, setExercises}) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -33,6 +33,8 @@ const Card = ({exerciseData}) => {
         open={modalOpen}
         setOpen={setModalOpen}
         data={exerciseData}
+        trainingId={trainingId}
+        setExercises={setExercises}
       />
     </View>
   );

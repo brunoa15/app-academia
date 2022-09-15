@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import {
+  Keyboard,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import Menu from './components/Menu';
 import ExercisesList from './components/ExercisesList';
 import Frequency from './components/Frequency';
@@ -14,14 +21,16 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
-      <View style={styles.container}>
-        {['A', 'B'].includes(active) && <ExercisesList active={active} />}
-        {active === 'C' && <Frequency />}
-      </View>
-      <Menu active={active} setActive={setActive} />
-    </SafeAreaView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
+        <View style={styles.container}>
+          {['A', 'B'].includes(active) && <ExercisesList active={active} />}
+          {active === 'C' && <Frequency />}
+        </View>
+        <Menu active={active} setActive={setActive} />
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

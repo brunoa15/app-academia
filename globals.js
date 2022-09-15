@@ -36,7 +36,7 @@ export const returnData = async key => {
   }
 };
 
-export const persistData = async (key, setState, newItem) => {
+export const pushData = async (key, newItem, setState) => {
   try {
     const value = await AsyncStorage.getItem(key);
     let newValue = [newItem];
@@ -44,15 +44,20 @@ export const persistData = async (key, setState, newItem) => {
       newValue = [...JSON.parse(value), newItem];
     }
     await AsyncStorage.setItem(key, JSON.stringify(newValue));
-    getData(key, setState);
+    if (setState) {
+      getData(key, setState);
+    }
   } catch (e) {
     console.error(e);
   }
 };
 
-export const updateData = async (key, newItem) => {
+export const updateData = async (key, newItem, setState) => {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(newItem));
+    if (setState) {
+      getData(key, setState);
+    }
   } catch (e) {
     console.error(e);
   }
