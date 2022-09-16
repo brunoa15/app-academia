@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8,
     flex: 1,
-    marginTop: Platform.OS === 'android' ? 16 : 0,
+    marginTop: Platform.OS === 'android' ? 16 : 8,
   },
 });
 

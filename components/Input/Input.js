@@ -9,6 +9,9 @@ const Input = ({
   keyboardType,
   label,
   returnKeyType,
+  autofocus,
+  inputRef,
+  onSubmitEditing,
 }) => {
   const [fieldColor, setFieldColor] = useState(colors.black);
 
@@ -43,6 +46,7 @@ const Input = ({
     <View>
       <Text style={styles.label}>{label}</Text>
       <TextInput
+        ref={inputRef}
         keyboardType={keyboardType}
         style={styles.input}
         value={value}
@@ -51,7 +55,8 @@ const Input = ({
         onFocus={onInputFocus}
         onBlur={onInputBlur}
         returnKeyType={returnKeyType}
-        onSubmitEditing={() => console.log('teste')}
+        onSubmitEditing={onSubmitEditing}
+        autoFocus={autofocus}
       />
     </View>
   );

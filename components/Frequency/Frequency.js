@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
-  Keyboard,
   StyleSheet,
   Switch,
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {colors, removeData, returnData, updateData} from '../../globals';
@@ -208,6 +206,8 @@ const Frequency = () => {
           style={styles.chainInput}
           textAlign="center"
           keyboardType="number-pad"
+          retur
+          returnKeyType="done"
         />
       </View>
       <View style={styles.weekView}>

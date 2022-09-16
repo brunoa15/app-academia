@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors, getData, pushData, updateData} from '../../globals';
 import Input from '../Input';
 
@@ -13,6 +13,9 @@ const DataEntry = ({data, trainingId, setExercises, setOpen}) => {
 
   const [allExercises, setAllExercises] = useState([]);
   const [exercise, setExercise] = useState(initialState);
+  const setsInputRef = useRef(null);
+  const repsInputRef = useRef(null);
+  const weightInputRef = useRef(null);
 
   const handleNewExercise = () => {
     const newExercise = {
@@ -51,32 +54,40 @@ const DataEntry = ({data, trainingId, setExercises, setOpen}) => {
     <View style={styles.container}>
       <Input
         label="Nome"
-        returnKeyType="next"
+        returnKeyType={data ? 'done' : 'next'}
         value={exercise.name}
         setValue={change => setExercise({...exercise, name: change})}
+        autofocus={!data}
+        onSubmitEditing={() => !data && setsInputRef.current.focus()}
       />
       <View style={styles.fieldset}>
         <View style={styles.inputGap}>
           <Input
+            inputRef={setsInputRef}
             label="Séries"
-            returnKeyType="next"
+            returnKeyType={Platform.OS === 'android' ? 'next' : 'done'}
             keyboardType="number-pad"
             value={exercise.sets}
             setValue={change => setExercise({...exercise, sets: change})}
+            onSubmitEditing={() => !data && repsInputRef.current.focus()}
           />
         </View>
         <View style={styles.inputGap}>
           <Input
+            inputRef={repsInputRef}
             label="Repetições"
-            returnKeyType="next"
+            returnKeyType={Platform.OS === 'android' ? 'next' : 'done'}
             keyboardType="number-pad"
             value={exercise.reps}
             setValue={change => setExercise({...exercise, reps: change})}
+            onSubmitEditing={() => !data && weightInputRef.current.focus()}
           />
         </View>
         <View style={styles.flexGrow}>
           <Input
+            inputRef={weightInputRef}
             label="Carga"
+            returnKeyType="done"
             keyboardType="numeric"
             value={exercise.weight}
             setValue={change => setExercise({...exercise, weight: change})}

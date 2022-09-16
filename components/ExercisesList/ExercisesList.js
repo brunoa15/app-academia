@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import {colors, getData} from '../../globals';
+import {Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {getData} from '../../globals';
 import AddButton from '../AddButton';
 import Card from '../Card';
 import ExerciseModal from '../ExerciseModal';
@@ -16,7 +16,7 @@ const ExercisesList = ({active}) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.viewMargin}>
+      <ScrollView style={styles.viewMargin} keyboardShouldPersistTaps="handled">
         {exercises.map((exercise, index) => (
           <View
             key={exercise.id}
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   viewMargin: {
-    marginBottom: 64,
+    marginBottom: Platform.OS === 'android' ? 64 : 48,
   },
   lastCard: {
     marginBottom: 64,
