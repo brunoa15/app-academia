@@ -51,6 +51,7 @@ const Input = ({
         onFocus={onInputFocus}
         onBlur={onInputBlur}
         returnKeyType={returnKeyType}
+        onSubmitEditing={() => console.log('teste')}
       />
     </View>
   );

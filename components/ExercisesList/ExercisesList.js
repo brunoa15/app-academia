@@ -16,14 +16,17 @@ const ExercisesList = ({active}) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        {exercises.map(exercise => (
-          <Card
+      <ScrollView style={styles.viewMargin}>
+        {exercises.map((exercise, index) => (
+          <View
             key={exercise.id}
-            exerciseData={exercise}
-            trainingId={active}
-            setExercises={setExercises}
-          />
+            style={index === exercises.length - 1 && styles.lastCard}>
+            <Card
+              exerciseData={exercise}
+              trainingId={active}
+              setExercises={setExercises}
+            />
+          </View>
         ))}
       </ScrollView>
       <ExerciseModal
@@ -41,25 +44,11 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
   },
-  tableRow: {
-    flexDirection: 'row',
+  viewMargin: {
+    marginBottom: 64,
   },
-  tableFirstItem: {
-    flex: 1,
-    fontSize: 16,
-    color: colors.secondary,
-  },
-  tableItems: {
-    width: 40,
-    fontSize: 16,
-    marginBottom: 4,
-    color: colors.white,
-  },
-  textTableHead: {
-    color: colors.primary,
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginBottom: 8,
+  lastCard: {
+    marginBottom: 64,
   },
 });
 

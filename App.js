@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import {
-  Keyboard,
+  Platform,
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import Menu from './components/Menu';
@@ -21,16 +20,14 @@ const App = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
-        <View style={styles.container}>
-          {['A', 'B'].includes(active) && <ExercisesList active={active} />}
-          {active === 'C' && <Frequency />}
-        </View>
-        <Menu active={active} setActive={setActive} />
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+    <SafeAreaView style={backgroundStyle}>
+      <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
+      <View style={styles.container}>
+        {['A', 'B'].includes(active) && <ExercisesList active={active} />}
+        {active === 'C' && <Frequency />}
+      </View>
+      <Menu active={active} setActive={setActive} />
+    </SafeAreaView>
   );
 };
 
@@ -39,6 +36,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8,
     flex: 1,
+    marginTop: Platform.OS === 'android' ? 16 : 0,
   },
 });
 

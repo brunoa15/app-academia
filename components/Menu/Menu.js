@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../globals';
 
 const Menu = ({active, setActive}) => {
@@ -45,7 +45,7 @@ const Menu = ({active, setActive}) => {
 const styles = StyleSheet.create({
   menu: {
     width: '100%',
-    height: 80,
+    height: Platform.OS === 'ios' ? 80 : 64,
     backgroundColor: colors.primary,
     position: 'absolute',
     bottom: 0,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   touchable: {
     width: '33%',
-    height: 80,
+    height: Platform.OS === 'ios' ? 80 : 64,
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',

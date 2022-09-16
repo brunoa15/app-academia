@@ -292,6 +292,7 @@ const styles = StyleSheet.create({
     shadowColor: '#171717',
     shadowOffset: {width: 2, height: 4},
     shadowOpacity: 0.5,
+    elevation: 8,
     justifyContent: 'center',
     color: colors.primaryDarker,
     fontWeight: 'bold',
