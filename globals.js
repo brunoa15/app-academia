@@ -54,7 +54,10 @@ export const pushData = async (key, newItem, setState) => {
 
 export const updateData = async (key, newItem, setState) => {
   try {
-    await AsyncStorage.setItem(key, JSON.stringify(newItem));
+    await AsyncStorage.setItem(
+      key,
+      typeof newItem === 'string' ? newItem : JSON.stringify(newItem),
+    );
     if (setState) {
       getData(key, setState);
     }

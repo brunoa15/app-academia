@@ -119,6 +119,7 @@ const Frequency = () => {
     const lastTrainingDate = await returnData('@lastTrainingDate');
 
     if (!week.includes(lastTrainingDate)) {
+      await removeData('@lastTrainingWeekDay');
       for (let i = 0; i < 6; i++) {
         await removeData(`@doneDay${i}`);
       }
@@ -135,13 +136,12 @@ const Frequency = () => {
 
   const getTrainingDay = async dayIndex => {
     const doneDayData = await returnData(`@doneDay${dayIndex}`);
+    if (doneDayData !== null) {
+      return doneDayData === 'true';
+    }
 
     if (dayIndex === 0) {
       return await getByLastTraining();
-    }
-
-    if (doneDayData !== null) {
-      return doneDayData === 'true';
     }
 
     return !(await getTrainingDay(dayIndex - 1));
@@ -163,7 +163,7 @@ const Frequency = () => {
   const handleDone = async () => {
     const lastTrainingWeekDay = await returnData('@lastTrainingWeekDay');
 
-    if (lastTrainingWeekDay < selectedWeekDay) {
+    if (lastTrainingWeekDay === null || lastTrainingWeekDay < selectedWeekDay) {
       updateData('@lastTraining', switchSelection);
       updateData('@lastTrainingWeekDay', selectedWeekDay);
       updateData('@lastTrainingDate', week[selectedWeekDay]);
