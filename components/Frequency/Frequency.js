@@ -23,29 +23,30 @@ const Frequency = () => {
 
   const buildWeek = () => {
     const newWeek = [];
+    const currentDate = today.toISOString().split('T')[0];
     let currentDay = today.getDate();
 
     if (today.getDay() === 0) {
       const newDate = new Date();
       newDate.setDate(today.getDate() - 1);
-      newWeek[5] = newDate.getDate();
+      newWeek[5] = newDate.toISOString().split('T')[0];
       currentDay = newDate.getDate();
     } else {
-      newWeek[(today.getDay() - 1 + 6) % 6] = today.getDate();
+      newWeek[(today.getDay() - 1 + 6) % 6] = currentDate;
     }
 
-    const todayIndex = newWeek.indexOf(currentDay);
+    const todayIndex = newWeek.indexOf(currentDate);
 
     for (let i = todayIndex - 1; i >= 0; i--) {
       const newDate = new Date();
       newDate.setDate(currentDay - (todayIndex - i));
-      newWeek[i] = newDate.getDate();
+      newWeek[i] = newDate.toISOString().split('T')[0];
     }
 
     for (let i = todayIndex + 1; i < 6; i++) {
       const newDate = new Date();
       newDate.setDate(currentDay + (i - todayIndex));
-      newWeek[i] = newDate.getDate();
+      newWeek[i] = newDate.toISOString().split('T')[0];
     }
 
     setWeek(newWeek);
@@ -115,33 +116,32 @@ const Frequency = () => {
   };
 
   const clearDoneDays = async () => {
-    for (let i = 0; i < 6; i++) {
-      await removeData(`@doneDay${i}`);
+    const lastTrainingDate = await returnData('@lastTrainingDate');
+
+    if (!week.includes(lastTrainingDate)) {
+      for (let i = 0; i < 6; i++) {
+        await removeData(`@doneDay${i}`);
+      }
     }
   };
 
   const getByLastTraining = async () => {
     const lastTraining = await returnData('@lastTraining');
-    const lastTrainingWeekDay = await returnData('@lastTrainingWeekDay');
-    const lastTrainingDate = await returnData('@lastTrainingDate');
-
     if (lastTraining === null) {
       return false;
-    }
-    if (lastTrainingWeekDay === 0 && lastTrainingDate === week[0]) {
-      await clearDoneDays();
     }
     return lastTraining === 'false';
   };
 
   const getTrainingDay = async dayIndex => {
     const doneDayData = await returnData(`@doneDay${dayIndex}`);
-    if (doneDayData !== null) {
-      return doneDayData === 'true';
-    }
 
     if (dayIndex === 0) {
       return await getByLastTraining();
+    }
+
+    if (doneDayData !== null) {
+      return doneDayData === 'true';
     }
 
     return !(await getTrainingDay(dayIndex - 1));
@@ -192,6 +192,7 @@ const Frequency = () => {
       setDoneDay(responseDoneDay);
     }
     if (week.length > 0) {
+      clearDoneDays();
       fetchData();
     }
   }, [selectedWeekDay, week]);
@@ -225,7 +226,7 @@ const Frequency = () => {
             onPress={() => setSelectedWeekDay(index)}>
             <View style={addDayViewStyle(index)}>
               <Text style={[styles.daysOfWeekText, addDayStyle(index)]}>
-                {day}
+                {day.split('-')[2]}
               </Text>
             </View>
           </TouchableOpacity>
