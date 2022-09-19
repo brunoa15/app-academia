@@ -3,7 +3,7 @@ import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors, getData, pushData, updateData} from '../../globals';
 import Input from '../Input';
 
-const DataEntry = ({data, trainingId, setExercises, setOpen}) => {
+const DataEntry = ({data, trainingId, setExercises, setOpen, nameInputRef}) => {
   const initialState = {
     name: '',
     sets: '',
@@ -53,11 +53,12 @@ const DataEntry = ({data, trainingId, setExercises, setOpen}) => {
   return (
     <View style={styles.container}>
       <Input
+        inputRef={nameInputRef}
         label="Nome"
         returnKeyType={data ? 'done' : 'next'}
         value={exercise.name}
         setValue={change => setExercise({...exercise, name: change})}
-        autofocus={!data}
+        autofocus={Platform.OS === 'ios' && !data}
         onSubmitEditing={() => !data && setsInputRef.current.focus()}
       />
       <View style={styles.fieldset}>
