@@ -1,11 +1,17 @@
 import React, {useRef} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {colors} from '../../globals';
 import DataEntry from '../DataEntry';
 
 const ExerciseModal = ({open, setOpen, data, trainingId, setExercises}) => {
   const nameInputRef = useRef(null);
+
+  const onAndroidModalOpen = () => {
+    if (Platform.OS === 'android' && !data) {
+      nameInputRef.current.focus();
+    }
+  };
 
   return (
     <Modal
@@ -15,7 +21,7 @@ const ExerciseModal = ({open, setOpen, data, trainingId, setExercises}) => {
       backdropOpacity={0.4}
       backdropColor={colors.grey}
       onBackdropPress={() => setOpen(false)}
-      onModalShow={() => nameInputRef.current.focus()}>
+      onModalShow={onAndroidModalOpen}>
       <View style={styles.modalContent}>
         <DataEntry
           data={data}
